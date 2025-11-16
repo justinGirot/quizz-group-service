@@ -8,11 +8,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * Custom UserDetails implementation for authenticated users.
+ * Compatible with JWT tokens from auth-service.
  */
 @Data
 @Builder
@@ -22,11 +25,18 @@ public class UserPrincipal implements UserDetails {
 
     private Long userId;
     private String email;
-    private String role;
+    private String roles; // Comma-separated roles from JWT
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+        if (roles == null || roles.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

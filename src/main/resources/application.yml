@@ -28,10 +28,19 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
 
-# JWT Configuration
+# JWT Configuration (aligned with auth-service)
 jwt:
-  secret: ${JWT_SECRET:ZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQ=}
-  expiration: 86400000
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
+  issuer: quiz-auth-service
+  audience: quiz-application
+  cookie:
+    name: token
+    max-age: 604800 # 7 days in seconds (7 * 24 * 60 * 60)
+    http-only: true
+    secure: ${JWT_COOKIE_SECURE:false} # Set to true in production (HTTPS only)
+    same-site: Strict # Strict, Lax, or None
+    path: /
 
 # Question Service Integration
 question:
