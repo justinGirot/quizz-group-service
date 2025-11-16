@@ -311,45 +311,7 @@ public class GroupController {
         return ResponseEntity.ok(member);
     }
 
-    @Operation(
-            summary = "Accept group invitation",
-            description = "Accepts a group invitation using the invitation token."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Invitation accepted successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid invitation or already responded"),
-            @ApiResponse(responseCode = "404", description = "Invitation not found"),
-            @ApiResponse(responseCode = "410", description = "Invitation expired")
-    })
-    @PostMapping("/invitations/{token}/accept")
-    public ResponseEntity<MemberDTO> acceptInvitation(
-            @Parameter(description = "Invitation token") @PathVariable String token,
-            @AuthenticationPrincipal UserPrincipal principal
-    ) {
-        log.info("Accepting invitation with token: {}", token);
-        MemberDTO member = groupInvitationService.acceptInvitation(token, principal.getUserId());
-        return ResponseEntity.ok(member);
-    }
-
-    @Operation(
-            summary = "Decline group invitation",
-            description = "Declines a group invitation using the invitation token."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Invitation declined successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid invitation or already responded"),
-            @ApiResponse(responseCode = "404", description = "Invitation not found"),
-            @ApiResponse(responseCode = "410", description = "Invitation expired")
-    })
-    @PostMapping("/invitations/{token}/decline")
-    public ResponseEntity<Map<String, String>> declineInvitation(
-            @Parameter(description = "Invitation token") @PathVariable String token,
-            @AuthenticationPrincipal UserPrincipal principal
-    ) {
-        log.info("Declining invitation with token: {}", token);
-        groupInvitationService.declineInvitation(token, principal.getUserId());
-        return ResponseEntity.ok(Map.of("message", "Invitation declined"));
-    }
+    // Note: Invitation accept/decline endpoints moved to InvitationController
 
     // Service-to-service endpoints
 
