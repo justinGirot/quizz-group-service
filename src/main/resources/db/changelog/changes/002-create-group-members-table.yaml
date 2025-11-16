@@ -56,15 +56,11 @@ databaseChangeLog:
             columnNames: group_id, user_id
             constraintName: uk_group_user
 
-        - addCheckConstraint:
-            tableName: group_members
-            constraintName: chk_member_role
-            checkCondition: "role IN ('MEMBER', 'ADMIN')"
+        - sql:
+            sql: ALTER TABLE group_members ADD CONSTRAINT chk_member_role CHECK (role IN ('MEMBER', 'ADMIN'))
 
-        - addCheckConstraint:
-            tableName: group_members
-            constraintName: chk_member_status
-            checkCondition: "status IN ('ACTIVE', 'PENDING', 'REMOVED')"
+        - sql:
+            sql: ALTER TABLE group_members ADD CONSTRAINT chk_member_status CHECK (status IN ('ACTIVE', 'PENDING', 'REMOVED'))
 
         - createIndex:
             tableName: group_members

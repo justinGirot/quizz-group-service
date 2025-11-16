@@ -59,10 +59,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-        - addCheckConstraint:
-            tableName: groups
-            constraintName: chk_group_type
-            checkCondition: "type IN ('PUBLIC', 'PRIVATE')"
+        - sql:
+            sql: ALTER TABLE groups ADD CONSTRAINT chk_group_type CHECK (type IN ('PUBLIC', 'PRIVATE'))
 
         - createIndex:
             tableName: groups

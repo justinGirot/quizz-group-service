@@ -63,15 +63,11 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: CASCADE
 
-        - addCheckConstraint:
-            tableName: group_invitations
-            constraintName: chk_invitation_status
-            checkCondition: "status IN ('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED')"
+        - sql:
+            sql: ALTER TABLE group_invitations ADD CONSTRAINT chk_invitation_status CHECK (status IN ('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED'))
 
-        - addCheckConstraint:
-            tableName: group_invitations
-            constraintName: chk_invitee_identifier
-            checkCondition: "invitee_email IS NOT NULL OR invitee_user_id IS NOT NULL"
+        - sql:
+            sql: ALTER TABLE group_invitations ADD CONSTRAINT chk_invitee_identifier CHECK (invitee_email IS NOT NULL OR invitee_user_id IS NOT NULL)
 
         - createIndex:
             tableName: group_invitations
