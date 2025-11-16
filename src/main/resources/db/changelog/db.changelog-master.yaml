@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-groups-table.yaml
+  - include:
+      file: db/changelog/changes/002-create-group-members-table.yaml
+  - include:
+      file: db/changelog/changes/003-create-group-invitations-table.yaml
