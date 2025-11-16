@@ -1,0 +1,286 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-data-groups
+      author: seed-data
+      context: dev
+      comment: Seed data for groups, members, and invitations
+      changes:
+        # ===== GROUPS =====
+
+        # 1. Science Enthusiasts - Public group (Admin: Sarah)
+        - insert:
+            tableName: groups
+            columns:
+              - column: {name: id, valueNumeric: 1}
+              - column: {name: name, value: 'Science Enthusiasts'}
+              - column: {name: description, value: 'A community for science lovers to share and learn about physics, chemistry, biology, and more!'}
+              - column: {name: type, value: 'PUBLIC'}
+              - column: {name: created_by, valueNumeric: 1}
+              - column: {name: group_admin_id, valueNumeric: 2}
+              - column: {name: avatar_url, value: 'https://api.dicebear.com/7.x/shapes/svg?seed=science'}
+              - column: {name: member_count, valueNumeric: 5}
+              - column: {name: created_at, valueDate: '2024-01-05T10:00:00'}
+              - column: {name: updated_at, valueDate: '2024-01-05T10:00:00'}
+
+        # 2. Tech Masters - Public group (Admin: Sarah)
+        - insert:
+            tableName: groups
+            columns:
+              - column: {name: id, valueNumeric: 2}
+              - column: {name: name, value: 'Tech Masters'}
+              - column: {name: description, value: 'Discuss programming, software engineering, AI, and cutting-edge technology'}
+              - column: {name: type, value: 'PUBLIC'}
+              - column: {name: created_by, valueNumeric: 1}
+              - column: {name: group_admin_id, valueNumeric: 2}
+              - column: {name: avatar_url, value: 'https://api.dicebear.com/7.x/shapes/svg?seed=tech'}
+              - column: {name: member_count, valueNumeric: 4}
+              - column: {name: created_at, valueDate: '2024-01-06T10:00:00'}
+              - column: {name: updated_at, valueDate: '2024-01-06T10:00:00'}
+
+        # 3. History Buffs - Private group (Admin: Mike)
+        - insert:
+            tableName: groups
+            columns:
+              - column: {name: id, valueNumeric: 3}
+              - column: {name: name, value: 'History Buffs'}
+              - column: {name: description, value: 'Deep dive into historical events, figures, and civilizations. Invitation only.'}
+              - column: {name: type, value: 'PRIVATE'}
+              - column: {name: created_by, valueNumeric: 1}
+              - column: {name: group_admin_id, valueNumeric: 3}
+              - column: {name: avatar_url, value: 'https://api.dicebear.com/7.x/shapes/svg?seed=history'}
+              - column: {name: member_count, valueNumeric: 3}
+              - column: {name: created_at, valueDate: '2024-01-07T10:00:00'}
+              - column: {name: updated_at, valueDate: '2024-01-07T10:00:00'}
+
+        # 4. Math Wizards - Public group (Admin: Admin)
+        - insert:
+            tableName: groups
+            columns:
+              - column: {name: id, valueNumeric: 4}
+              - column: {name: name, value: 'Math Wizards'}
+              - column: {name: description, value: 'From basic arithmetic to advanced calculus, explore the beauty of mathematics'}
+              - column: {name: type, value: 'PUBLIC'}
+              - column: {name: created_by, valueNumeric: 1}
+              - column: {name: group_admin_id, valueNumeric: 1}
+              - column: {name: avatar_url, value: 'https://api.dicebear.com/7.x/shapes/svg?seed=math'}
+              - column: {name: member_count, valueNumeric: 3}
+              - column: {name: created_at, valueDate: '2024-01-08T10:00:00'}
+              - column: {name: updated_at, valueDate: '2024-01-08T10:00:00'}
+
+        # 5. Geography Explorers - Private group (Admin: Mike)
+        - insert:
+            tableName: groups
+            columns:
+              - column: {name: id, valueNumeric: 5}
+              - column: {name: name, value: 'Geography Explorers'}
+              - column: {name: description, value: 'Explore countries, capitals, landmarks, and geographical wonders'}
+              - column: {name: type, value: 'PRIVATE'}
+              - column: {name: created_by, valueNumeric: 1}
+              - column: {name: group_admin_id, valueNumeric: 3}
+              - column: {name: avatar_url, value: 'https://api.dicebear.com/7.x/shapes/svg?seed=geography'}
+              - column: {name: member_count, valueNumeric: 2}
+              - column: {name: created_at, valueDate: '2024-01-10T10:00:00'}
+              - column: {name: updated_at, valueDate: '2024-01-10T10:00:00'}
+
+        # ===== GROUP MEMBERS =====
+
+        # Science Enthusiasts members
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 1}
+              - column: {name: group_id, valueNumeric: 1}
+              - column: {name: user_id, valueNumeric: 2}
+              - column: {name: role, value: 'ADMIN'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-05T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 2}
+              - column: {name: group_id, valueNumeric: 1}
+              - column: {name: user_id, valueNumeric: 4}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-11T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 3}
+              - column: {name: group_id, valueNumeric: 1}
+              - column: {name: user_id, valueNumeric: 5}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-12T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 4}
+              - column: {name: group_id, valueNumeric: 1}
+              - column: {name: user_id, valueNumeric: 6}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-15T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 5}
+              - column: {name: group_id, valueNumeric: 1}
+              - column: {name: user_id, valueNumeric: 8}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-18T10:00:00'}
+
+        # Tech Masters members
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 6}
+              - column: {name: group_id, valueNumeric: 2}
+              - column: {name: user_id, valueNumeric: 2}
+              - column: {name: role, value: 'ADMIN'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-06T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 7}
+              - column: {name: group_id, valueNumeric: 2}
+              - column: {name: user_id, valueNumeric: 4}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-11T11:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 8}
+              - column: {name: group_id, valueNumeric: 2}
+              - column: {name: user_id, valueNumeric: 6}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-15T11:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 9}
+              - column: {name: group_id, valueNumeric: 2}
+              - column: {name: user_id, valueNumeric: 8}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-18T11:00:00'}
+
+        # History Buffs members (private)
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 10}
+              - column: {name: group_id, valueNumeric: 3}
+              - column: {name: user_id, valueNumeric: 3}
+              - column: {name: role, value: 'ADMIN'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-07T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 11}
+              - column: {name: group_id, valueNumeric: 3}
+              - column: {name: user_id, valueNumeric: 5}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-13T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 12}
+              - column: {name: group_id, valueNumeric: 3}
+              - column: {name: user_id, valueNumeric: 6}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-15T12:00:00'}
+
+        # Math Wizards members
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 13}
+              - column: {name: group_id, valueNumeric: 4}
+              - column: {name: user_id, valueNumeric: 1}
+              - column: {name: role, value: 'ADMIN'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-08T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 14}
+              - column: {name: group_id, valueNumeric: 4}
+              - column: {name: user_id, valueNumeric: 4}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-11T12:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 15}
+              - column: {name: group_id, valueNumeric: 4}
+              - column: {name: user_id, valueNumeric: 7}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-20T10:00:00'}
+
+        # Geography Explorers members (private)
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 16}
+              - column: {name: group_id, valueNumeric: 5}
+              - column: {name: user_id, valueNumeric: 3}
+              - column: {name: role, value: 'ADMIN'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-10T10:00:00'}
+        - insert:
+            tableName: group_members
+            columns:
+              - column: {name: id, valueNumeric: 17}
+              - column: {name: group_id, valueNumeric: 5}
+              - column: {name: user_id, valueNumeric: 6}
+              - column: {name: role, value: 'MEMBER'}
+              - column: {name: status, value: 'ACTIVE'}
+              - column: {name: joined_at, valueDate: '2024-01-15T13:00:00'}
+
+        # ===== GROUP INVITATIONS =====
+
+        # Pending invitation for History Buffs
+        - insert:
+            tableName: group_invitations
+            columns:
+              - column: {name: id, valueNumeric: 1}
+              - column: {name: group_id, valueNumeric: 3}
+              - column: {name: invited_by, valueNumeric: 3}
+              - column: {name: invitee_email, value: 'lisa.martin@quiz.com'}
+              - column: {name: invitee_user_id, valueNumeric: 7}
+              - column: {name: status, value: 'PENDING'}
+              - column: {name: token, value: 'inv-hist-lisa-001'}
+              - column: {name: expires_at, valueDate: '2024-02-27T10:00:00'}
+              - column: {name: created_at, valueDate: '2024-01-20T10:00:00'}
+
+        # Pending invitation for Geography Explorers
+        - insert:
+            tableName: group_invitations
+            columns:
+              - column: {name: id, valueNumeric: 2}
+              - column: {name: group_id, valueNumeric: 5}
+              - column: {name: invited_by, valueNumeric: 3}
+              - column: {name: invitee_email, value: 'john.doe@quiz.com'}
+              - column: {name: invitee_user_id, valueNumeric: 4}
+              - column: {name: status, value: 'PENDING'}
+              - column: {name: token, value: 'inv-geo-john-001'}
+              - column: {name: expires_at, valueDate: '2024-02-25T10:00:00'}
+              - column: {name: created_at, valueDate: '2024-01-18T10:00:00'}
+
+      rollback:
+        - delete:
+            tableName: group_invitations
+        - delete:
+            tableName: group_members
+        - delete:
+            tableName: groups

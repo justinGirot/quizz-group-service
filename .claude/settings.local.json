@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nul)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(tree:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(where:*)",
+      "Bash(java:*)",
+      "Bash(curl:*)",
+      "Bash(./mvnw.cmd clean compile:*)",
+      "Bash(./mvnw.cmd test:*)",
+      "Bash(./mvnw.cmd clean package)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh pr create:*)",
+      "Bash(git push)",
+      "Bash(./mvnw.cmd clean test:*)",
+      "Bash(NUL)",
+      "Bash(del /F nul 2)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-group-members-table
+      author: system
+      changes:
+        - createTable:
+            tableName: group_members
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: joined_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: removed_at
+                  type: TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: group_members
+            baseColumnNames: group_id
+            constraintName: fk_group_members_group
+            referencedTableName: groups
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: group_members
+            columnNames: group_id, user_id
+            constraintName: uk_group_user
+
+        - sql:
+            sql: ALTER TABLE group_members ADD CONSTRAINT chk_member_role CHECK (role IN ('MEMBER', 'ADMIN'))
+
+        - sql:
+            sql: ALTER TABLE group_members ADD CONSTRAINT chk_member_status CHECK (status IN ('ACTIVE', 'PENDING', 'REMOVED'))
+
+        - createIndex:
+            tableName: group_members
+            indexName: idx_group_members_user
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: group_members
+            indexName: idx_group_members_group
+            columns:
+              - column:
+                  name: group_id
+              - column:
+                  name: status

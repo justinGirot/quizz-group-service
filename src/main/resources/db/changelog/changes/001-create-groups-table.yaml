@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-groups-table
+      author: system
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_admin_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avatar_url
+                  type: VARCHAR(500)
+              - column:
+                  name: member_count
+                  type: INTEGER
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - sql:
+            sql: ALTER TABLE groups ADD CONSTRAINT chk_group_type CHECK (type IN ('PUBLIC', 'PRIVATE'))
+
+        - createIndex:
+            tableName: groups
+            indexName: idx_groups_type
+            columns:
+              - column:
+                  name: type
+
+        - createIndex:
+            tableName: groups
+            indexName: idx_groups_created_by
+            columns:
+              - column:
+                  name: created_by
+
+        - createIndex:
+            tableName: groups
+            indexName: idx_groups_group_admin
+            columns:
+              - column:
+                  name: group_admin_id
