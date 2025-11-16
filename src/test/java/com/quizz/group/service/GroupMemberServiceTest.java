@@ -1,5 +1,6 @@
 package com.quizz.group.service;
 
+import com.quizz.group.client.QuestionServiceWebhookClient;
 import com.quizz.group.dto.MemberDTO;
 import com.quizz.group.dto.UpdateMemberRoleRequest;
 import com.quizz.group.exception.BadRequestException;
@@ -29,6 +30,9 @@ class GroupMemberServiceTest {
 
     @Mock
     private GroupRepository groupRepository;
+
+    @Mock
+    private QuestionServiceWebhookClient webhookClient;
 
     @InjectMocks
     private GroupMemberService groupMemberService;

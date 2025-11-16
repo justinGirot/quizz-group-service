@@ -392,4 +392,36 @@ public class GroupController {
         GroupDTO group = groupService.getGroupById(id);
         return ResponseEntity.ok(Map.of("type", group.getType().name()));
     }
+
+    @Operation(
+            summary = "Get user's group IDs",
+            description = "Service-to-service endpoint. Returns all group IDs where user is an active member (any role)."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Group IDs retrieved successfully")
+    })
+    @GetMapping("/user/{userId}/groups")
+    public ResponseEntity<UserGroupsResponse> getUserGroups(
+            @Parameter(description = "User ID") @PathVariable Long userId
+    ) {
+        log.info("Getting group IDs for userId={}", userId);
+        List<Long> groupIds = groupMemberService.getUserGroupIds(userId);
+        return ResponseEntity.ok(new UserGroupsResponse(groupIds));
+    }
+
+    @Operation(
+            summary = "Get user's admin group IDs",
+            description = "Service-to-service endpoint. Returns group IDs where user has ADMIN role. Used by Question Service for access control."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Admin group IDs retrieved successfully")
+    })
+    @GetMapping("/user/{userId}/admin-groups")
+    public ResponseEntity<UserGroupsResponse> getUserAdminGroups(
+            @Parameter(description = "User ID") @PathVariable Long userId
+    ) {
+        log.info("Getting admin group IDs for userId={}", userId);
+        List<Long> adminGroupIds = groupMemberService.getUserAdminGroupIds(userId);
+        return ResponseEntity.ok(new UserGroupsResponse(adminGroupIds));
+    }
 }

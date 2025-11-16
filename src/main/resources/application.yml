@@ -33,6 +33,11 @@ jwt:
   secret: ${JWT_SECRET:ZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQtZGVmYXVsdC1zZWNyZXQ=}
   expiration: 86400000
 
+# Question Service Integration
+question:
+  service:
+    url: ${QUESTION_SERVICE_URL:http://localhost:8082}
+
 # Eureka Client (optional)
 eureka:
   client:

@@ -47,4 +47,16 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
      * Delete all members of a group (for group deletion).
      */
     void deleteByGroupId(Long groupId);
+
+    /**
+     * Find all group IDs where user is an active member (any role).
+     */
+    @Query("SELECT gm.groupId FROM GroupMember gm WHERE gm.userId = :userId AND gm.status = 'ACTIVE'")
+    List<Long> findGroupIdsByUserId(@Param("userId") Long userId);
+
+    /**
+     * Find group IDs where user has specific role and is active.
+     */
+    @Query("SELECT gm.groupId FROM GroupMember gm WHERE gm.userId = :userId AND gm.role = :role AND gm.status = 'ACTIVE'")
+    List<Long> findGroupIdsByUserIdAndRole(@Param("userId") Long userId, @Param("role") com.quizz.group.model.MemberRole role);
 }

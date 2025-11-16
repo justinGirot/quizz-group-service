@@ -1,5 +1,6 @@
 package com.quizz.group.service;
 
+import com.quizz.group.client.QuestionServiceWebhookClient;
 import com.quizz.group.dto.MemberDTO;
 import com.quizz.group.dto.UpdateMemberRoleRequest;
 import com.quizz.group.exception.BadRequestException;
@@ -30,6 +31,7 @@ public class GroupMemberService {
 
     private final GroupMemberRepository groupMemberRepository;
     private final GroupRepository groupRepository;
+    private final QuestionServiceWebhookClient webhookClient;
 
     /**
      * Join a public group.
@@ -64,6 +66,9 @@ public class GroupMemberService {
         // Increment member count
         groupRepository.incrementMemberCount(groupId);
 
+        // Invalidate user's groups cache in Question Service
+        webhookClient.invalidateUserGroupsCache(userId);
+
         log.info("User {} joined group {} successfully", userId, groupId);
         return MapperUtil.toMemberDTO(savedMember);
     }
@@ -82,6 +87,9 @@ public class GroupMemberService {
             throw new BadRequestException("User is not an active member");
         }
 
+        // Capture role before removal for webhook decision
+        MemberRole roleBeforeRemoval = member.getRole();
+
         // Update status to removed
         member.setStatus(MemberStatus.REMOVED);
         member.setRemovedAt(LocalDateTime.now());
@@ -89,6 +97,13 @@ public class GroupMemberService {
 
         // Decrement member count
         groupRepository.decrementMemberCount(groupId);
+
+        // Invalidate user's groups cache in Question Service
+        webhookClient.invalidateUserGroupsCache(userId);
+        // If user was an admin, also invalidate admin groups cache
+        if (roleBeforeRemoval == MemberRole.ADMIN) {
+            webhookClient.invalidateUserAdminGroupsCache(userId);
+        }
 
         log.info("User {} left group {} successfully", userId, groupId);
     }
@@ -107,6 +122,9 @@ public class GroupMemberService {
             throw new BadRequestException("User is not an active member");
         }
 
+        // Capture role before removal for webhook decision
+        MemberRole roleBeforeRemoval = member.getRole();
+
         // Update status to removed
         member.setStatus(MemberStatus.REMOVED);
         member.setRemovedAt(LocalDateTime.now());
@@ -114,6 +132,13 @@ public class GroupMemberService {
 
         // Decrement member count
         groupRepository.decrementMemberCount(groupId);
+
+        // Invalidate user's groups cache in Question Service
+        webhookClient.invalidateUserGroupsCache(userId);
+        // If user was an admin, also invalidate admin groups cache
+        if (roleBeforeRemoval == MemberRole.ADMIN) {
+            webhookClient.invalidateUserAdminGroupsCache(userId);
+        }
 
         log.info("User {} removed from group {} successfully", userId, groupId);
     }
@@ -132,8 +157,18 @@ public class GroupMemberService {
             throw new BadRequestException("User is not an active member");
         }
 
-        member.setRole(request.getRole());
+        MemberRole oldRole = member.getRole();
+        MemberRole newRole = request.getRole();
+
+        member.setRole(newRole);
         GroupMember updatedMember = groupMemberRepository.save(member);
+
+        // Invalidate user's groups cache in Question Service
+        webhookClient.invalidateUserGroupsCache(userId);
+        // If role changed to/from ADMIN, also invalidate admin groups cache
+        if (oldRole == MemberRole.ADMIN || newRole == MemberRole.ADMIN) {
+            webhookClient.invalidateUserAdminGroupsCache(userId);
+        }
 
         log.info("Member role updated successfully");
         return MapperUtil.toMemberDTO(updatedMember);
@@ -196,6 +231,16 @@ public class GroupMemberService {
                 .build();
 
         groupMemberRepository.save(member);
+
+        // Invalidate user's groups cache in Question Service only if status is ACTIVE
+        if (status == MemberStatus.ACTIVE) {
+            webhookClient.invalidateUserGroupsCache(userId);
+            // If user is being added as an admin, also invalidate admin groups cache
+            if (role == MemberRole.ADMIN) {
+                webhookClient.invalidateUserAdminGroupsCache(userId);
+            }
+        }
+
         log.info("Member added successfully");
     }
 
@@ -208,5 +253,25 @@ public class GroupMemberService {
                 .orElseThrow(() -> new BadRequestException("User is not a member of this group"));
 
         return MapperUtil.toMemberDTO(member);
+    }
+
+    /**
+     * Get all group IDs where user is an active member (any role).
+     * Used for Question Service integration.
+     */
+    @Transactional(readOnly = true)
+    public List<Long> getUserGroupIds(Long userId) {
+        log.debug("Fetching all group IDs for userId={}", userId);
+        return groupMemberRepository.findGroupIdsByUserId(userId);
+    }
+
+    /**
+     * Get group IDs where user has ADMIN role.
+     * Used for Question Service integration - determines which group questions user can manage.
+     */
+    @Transactional(readOnly = true)
+    public List<Long> getUserAdminGroupIds(Long userId) {
+        log.debug("Fetching admin group IDs for userId={}", userId);
+        return groupMemberRepository.findGroupIdsByUserIdAndRole(userId, MemberRole.ADMIN);
     }
 }
