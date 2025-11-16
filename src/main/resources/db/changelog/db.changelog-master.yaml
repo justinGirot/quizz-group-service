@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/changelog/changes/002-create-group-members-table.yaml
   - include:
       file: db/changelog/changes/003-create-group-invitations-table.yaml
+
+  # Seed data for development/testing
+  - include:
+      file: db/changelog/changes/001-seed-data-groups.yaml
