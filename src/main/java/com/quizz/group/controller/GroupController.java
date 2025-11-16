@@ -311,7 +311,78 @@ public class GroupController {
         return ResponseEntity.ok(member);
     }
 
-    // Note: Invitation accept/decline endpoints moved to InvitationController
+    @Operation(
+            summary = "Get current user's pending invitations",
+            description = "Retrieves all pending (non-expired) invitations for the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Invitations retrieved successfully")
+    })
+    @GetMapping("/invitations/my-invitations")
+    public ResponseEntity<List<InvitationDTO>> getMyInvitations(
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        log.debug("Getting pending invitations for user: {} ({})", principal.getUserId(), principal.getEmail());
+
+        // Get invitations by both email and userId to cover all cases
+        List<InvitationDTO> invitations = new java.util.ArrayList<>();
+
+        // Get invitations sent to user's email
+        if (principal.getEmail() != null) {
+            invitations.addAll(groupInvitationService.getPendingInvitationsByEmail(principal.getEmail()));
+        }
+
+        // Get invitations sent to user's ID
+        invitations.addAll(groupInvitationService.getPendingInvitationsByUserId(principal.getUserId()));
+
+        // Remove duplicates (in case invitation was sent with both email and userId)
+        List<InvitationDTO> uniqueInvitations = invitations.stream()
+                .distinct()
+                .collect(java.util.stream.Collectors.toList());
+
+        log.debug("Found {} unique pending invitations for user {}", uniqueInvitations.size(), principal.getUserId());
+        return ResponseEntity.ok(uniqueInvitations);
+    }
+
+    @Operation(
+            summary = "Accept group invitation",
+            description = "Accepts a group invitation using the invitation token."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Invitation accepted successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid invitation or already responded"),
+            @ApiResponse(responseCode = "404", description = "Invitation not found"),
+            @ApiResponse(responseCode = "410", description = "Invitation expired")
+    })
+    @PostMapping("/invitations/{token}/accept")
+    public ResponseEntity<MemberDTO> acceptInvitation(
+            @Parameter(description = "Invitation token") @PathVariable String token,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        log.info("User {} accepting invitation with token: {}", principal.getUserId(), token);
+        MemberDTO member = groupInvitationService.acceptInvitation(token, principal.getUserId());
+        return ResponseEntity.ok(member);
+    }
+
+    @Operation(
+            summary = "Decline group invitation",
+            description = "Declines a group invitation using the invitation token."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Invitation declined successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid invitation or already responded"),
+            @ApiResponse(responseCode = "404", description = "Invitation not found"),
+            @ApiResponse(responseCode = "410", description = "Invitation expired")
+    })
+    @PostMapping("/invitations/{token}/decline")
+    public ResponseEntity<Map<String, String>> declineInvitation(
+            @Parameter(description = "Invitation token") @PathVariable String token,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        log.info("User {} declining invitation with token: {}", principal.getUserId(), token);
+        groupInvitationService.declineInvitation(token, principal.getUserId());
+        return ResponseEntity.ok(Map.of("message", "Invitation declined"));
+    }
 
     // Service-to-service endpoints
 
